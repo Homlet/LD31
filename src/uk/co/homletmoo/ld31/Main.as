@@ -3,6 +3,7 @@ package uk.co.homletmoo.ld31
 	import net.flashpunk.Engine;
 	import net.flashpunk.FP;
 	import net.flashpunk.utils.Key;
+	import uk.co.homletmoo.ld31.world.GameWorld;
 	import uk.co.homletmoo.ld31.world.SplashWorld;
 	
 	[SWF (width = "800", height = "600", backgroundColor = "#523e29")]
@@ -32,7 +33,8 @@ package uk.co.homletmoo.ld31
 		override public function init():void
 		{
 			Controls.register();
-			FP.world = new SplashWorld();
+			// FP.world = new SplashWorld();
+			FP.world = new GameWorld();
 		}
 	}
 }
