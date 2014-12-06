@@ -22,6 +22,8 @@ package uk.co.homletmoo.ld31.entity
 		public static const MAP_HEIGHT:uint = uint(Main.HEIGHT / TILE_SIZE);
 		
 		public static const ROOM_STARBURST:uint = 0;
+		public static const ROOM_RECTANGLE:uint = 1;
+		public static const ROOM_CROSS:uint = 2;
 		
 		private var _start:Point;
 		private var rooms:uint;
@@ -34,7 +36,7 @@ package uk.co.homletmoo.ld31.entity
 			super();
 			
 			// Initialise variables.
-			_start = new Point(20, 20);
+			_start = new Point(0, 0);
 			this.rooms = rooms;
 			
 			tilemap = generate();
@@ -80,15 +82,36 @@ package uk.co.homletmoo.ld31.entity
 					(i + 0.5) * MAP_WIDTH / room_spread + Math.random() * 8 - 4,
 					(j + 0.5) * MAP_HEIGHT / room_spread + Math.random() * 8 - 4));
 			}
+			_start = room_centers[0].clone();
 			
 			// Generate rooms.
 			for each (var center:Point in room_centers)
 			{
-				switch (Math.floor(Math.random()))
+				switch (Math.floor(Math.random() * 2.8))
 				{
 				case ROOM_STARBURST:
 					var size:Number = 4 + 5 * Math.random();
 					apply_starburst(level, center, size, size, true);
+					break;
+				
+				case ROOM_RECTANGLE:
+					var width:uint = uint(6 + 8 * Math.random());
+					var height:uint = uint(5 + 5 * Math.random());
+					level.setRect(
+						center.x - width / 2, center.y - height / 2,
+						width, height, 1);
+					break;
+				
+				case ROOM_CROSS:
+					var breadth:uint = uint(6 + 3 * Math.random());
+					var dip:uint = uint(3 + 2 * Math.random());
+					level.setRect(
+						center.x - breadth / 2, center.y - (breadth - dip) / 2,
+						breadth, breadth - dip, 1);
+					level.setRect(
+						center.x - (breadth - dip) / 2, center.y - breadth / 2,
+						breadth - dip, breadth, 1);
+					break;
 				}
 			}
 			
@@ -116,7 +139,7 @@ package uk.co.homletmoo.ld31.entity
 			
 			function generate_endpoint(theta:Number):Point
 			{
-				var length:Number = size * (0.3 + Math.log(1 + Math.random()));
+				var length:Number = size * (0.5 + Math.log(1 + Math.random()));
 				return new Point(
 					center.x + length * Math.cos(theta),
 					center.y + length * Math.sin(theta));
