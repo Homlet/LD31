@@ -18,7 +18,6 @@ package uk.co.homletmoo.ld31
 		
 		public static const WIDTH:uint = 800;
 		public static const HEIGHT:uint = 600;
-		public static const SCALE:uint = 4;
 		
 		public function Main()
 		{

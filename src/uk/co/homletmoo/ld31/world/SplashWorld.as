@@ -21,16 +21,15 @@ package uk.co.homletmoo.ld31.world
 		private var tweens:Array;
 		private var stage:uint;
 		
-		
 		public function SplashWorld() 
 		{
 			hm_logo = new Image(Images.HM_LOGO);
-			hm_logo.scale = Main.SCALE * 2;
+			hm_logo.scale = 8;
 			hm_logo.alpha = 0;
 			hm_logo.centerOrigin();
 			
 			fp_logo = new Spritemap(Images.FP_LOGO, 100, 100);
-			fp_logo.scale = Main.SCALE;
+			fp_logo.scale = 4;
 			fp_logo.alpha = 0;
 			fp_logo.add("play", [0, 1, 2, 3], 8);
 			
@@ -62,7 +61,7 @@ package uk.co.homletmoo.ld31.world
 		
 		private function done():void
 		{
-			// Set next world.
+			FP.world = new GameWorld();
 		}
 	}
 }
