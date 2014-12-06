@@ -64,7 +64,8 @@ package uk.co.homletmoo.ld31.entity
 				switch (Math.floor(Math.random()))
 				{
 				case ROOM_STARBURST:
-					apply_starburst(level, center);
+					var size:Number = 20 * (0.5 + 0.5 * Math.random());
+					apply_starburst(level, center, size, size, true);
 				}
 			}
 			
@@ -79,7 +80,7 @@ package uk.co.homletmoo.ld31.entity
 		 * @param	detail  Number of rays.
 		 */
 		private function apply_starburst(level:Tilemap, center:Point,
-			size:Number = 10.0, detail:uint = 30):void
+			size:Number=7.0, detail:uint=30, smooth:Boolean=false):void
 		{			
 			function visit(i:int, j:int):void
 			{
@@ -90,19 +91,34 @@ package uk.co.homletmoo.ld31.entity
 				}
 			}
 			
-			const tau:Number = Math.PI * 2;
-			var sweep:Number = tau / detail;
-			for (var theta:Number = 0; theta < tau; theta += sweep)
+			function generate_endpoint(theta:Number):Point
 			{
-				var length:Number = size * (
-					0.75 +
-					0.25 * Math.pow(Math.sin(theta * 2), 2) +
-					0.15 * Math.random());
-				var end:Point = new Point(
+				var length:Number = size * (0.5 + 0.5 * Math.random());
+				return new Point(
 					center.x + length * Math.cos(theta),
 					center.y + length * Math.sin(theta));
-				
-				Utils.raytrace(center, end, visit);
+			}
+			
+			const tau:Number = Math.PI * 2;
+			var sweep:Number = tau / detail;
+			var ends:Array = [];
+			for (var theta:Number = 0; theta < tau; theta += sweep)
+			{
+				if (smooth)
+					ends.push(generate_endpoint(theta));
+				else
+					Utils.raytrace(center, generate_endpoint(theta), visit);
+			}
+			
+			if (smooth)
+			{
+				var last:Point = ends[ends.length - 1];
+				for each(var end:Point in ends)
+				{
+					Utils.raytrace(last, end, visit);
+					last = end;
+				}
+				level.floodFill(center.x, center.y, 1);
 			}
 		}
 	}

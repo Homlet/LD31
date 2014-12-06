@@ -18,7 +18,7 @@ package uk.co.homletmoo.ld31
 				(end.y > start.y) ? 1 : -1);
 			
 			var position:Point = start.clone();
-			var steps:uint = 1 + delta.x + delta.y;
+			var steps:uint = 2 + delta.x + delta.y;
 			var error:int = delta.x - delta.y;
 			
 			delta.x *= 2;
