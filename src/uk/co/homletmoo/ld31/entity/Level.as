@@ -29,12 +29,12 @@ package uk.co.homletmoo.ld31.entity
 		private var tilemap:Tilemap;
 		private var grid:Grid;
 		
-		public function Level(rooms:uint=5)
+		public function Level(rooms:uint=14)
 		{
 			super();
 			
 			// Initialise variables.
-			_start = new Point(10, 10);
+			_start = new Point(20, 20);
 			this.rooms = rooms;
 			
 			tilemap = generate();
@@ -57,12 +57,28 @@ package uk.co.homletmoo.ld31.entity
 			level.floodFill(0, 0, 0);
 			
 			// Create list of room centres.
-			var room_centers:Array = [_start];
-			for (var i:int = 1; i < rooms; i++)
+			var room_centers:Array = [];
+			var room_spread:Number = Math.ceil(Math.sqrt(rooms));
+			
+			var grid_points:uint = Math.pow(room_spread, 2);
+			var slack:uint = grid_points - rooms;
+			
+			for (var j:uint = 0; j < room_spread; j++)
+			for (var i:uint = 0; i < room_spread; i++)
 			{
+				if (slack > 0)
+				{
+					if (grid_points - room_centers.length <= slack
+					 || Math.random() > 0.8)
+					{
+						slack--;
+						continue;
+					}
+				}
+				
 				room_centers.push(new Point(
-					uint(Math.random() * MAP_WIDTH),
-					uint(Math.random() * MAP_HEIGHT)));
+					(i + 0.5) * MAP_WIDTH / room_spread + Math.random() * 8 - 4,
+					(j + 0.5) * MAP_HEIGHT / room_spread + Math.random() * 8 - 4));
 			}
 			
 			// Generate rooms.
@@ -71,7 +87,7 @@ package uk.co.homletmoo.ld31.entity
 				switch (Math.floor(Math.random()))
 				{
 				case ROOM_STARBURST:
-					var size:Number = 20 * (0.5 + 0.5 * Math.random());
+					var size:Number = 4 + 5 * Math.random();
 					apply_starburst(level, center, size, size, true);
 				}
 			}
@@ -100,7 +116,7 @@ package uk.co.homletmoo.ld31.entity
 			
 			function generate_endpoint(theta:Number):Point
 			{
-				var length:Number = size * (0.5 + 0.5 * Math.random());
+				var length:Number = size * (0.3 + Math.log(1 + Math.random()));
 				return new Point(
 					center.x + length * Math.cos(theta),
 					center.y + length * Math.sin(theta));
