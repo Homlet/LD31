@@ -1,8 +1,10 @@
 package uk.co.homletmoo.ld31.world 
 {
+	import net.flashpunk.FP;
 	import net.flashpunk.World;
 	import uk.co.homletmoo.ld31.entity.Level;
 	import uk.co.homletmoo.ld31.entity.Player;
+	import uk.co.homletmoo.ld31.Utils;
 	
 	/**
 	 * ...
@@ -29,7 +31,7 @@ package uk.co.homletmoo.ld31.world
 		
 		override public function update():void
 		{
-			super.update()
+			super.update();
 		}
 	}
 }

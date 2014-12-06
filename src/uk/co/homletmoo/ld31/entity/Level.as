@@ -10,6 +10,7 @@ package uk.co.homletmoo.ld31.entity
 	import uk.co.homletmoo.ld31.Main;
 	import uk.co.homletmoo.ld31.Types;
 	import uk.co.homletmoo.ld31.Utils;
+	import uk.co.homletmoo.ld31.world.gen.Room;
 	
 	/**
 	 * ...
@@ -21,30 +22,31 @@ package uk.co.homletmoo.ld31.entity
 		public static const MAP_WIDTH:uint = uint(Main.WIDTH / TILE_SIZE);
 		public static const MAP_HEIGHT:uint = uint(Main.HEIGHT / TILE_SIZE);
 		
-		public static const ROOM_STARBURST:uint = 0;
-		public static const ROOM_RECTANGLE:uint = 1;
-		public static const ROOM_CROSS:uint = 2;
-		
 		private var _start:Point;
-		private var rooms:uint;
+		private var room_count:uint;
 		
 		private var tilemap:Tilemap;
 		private var grid:Grid;
 		
-		public function Level(rooms:uint=14)
+		public function Level(room_count:uint=20)
 		{
 			super();
 			
 			// Initialise variables.
 			_start = new Point(0, 0);
-			this.rooms = rooms;
+			this.room_count = room_count;
 			
-			tilemap = generate();
-			grid = tilemap.createGrid([0]);
+			tilemap = new Tilemap(Images.TILES,
+				Main.WIDTH, Main.HEIGHT, TILE_SIZE, TILE_SIZE);
+			tilemap.floodFill(0, 0, 0);
 			
 			graphic = tilemap;
 			mask = grid;
 			type = Types.LEVEL;
+			
+			// Generate the dungeon!
+			generate();
+			grid = tilemap.createGrid([0]);
 		}
 		
 		public function get start():Point
@@ -52,120 +54,82 @@ package uk.co.homletmoo.ld31.entity
 			return new Point(_start.x * TILE_SIZE, _start.y * TILE_SIZE);
 		}
 		
-		private function generate():Tilemap
+		private function generate():void
 		{
-			var level:Tilemap = new Tilemap(Images.TILES,
-				Main.WIDTH, Main.HEIGHT, TILE_SIZE, TILE_SIZE);
-			level.floodFill(0, 0, 0);
+			// Create list of rooms.
+			var rooms:Vector.<Room> = new Vector.<Room>();
 			
-			// Create list of room centres.
-			var room_centers:Array = [];
-			var room_spread:Number = Math.ceil(Math.sqrt(rooms));
-			
+			var room_spread:Number = Math.ceil(Math.sqrt(room_count));
 			var grid_points:uint = Math.pow(room_spread, 2);
-			var slack:uint = grid_points - rooms;
+			var slack:uint = grid_points - room_count;
 			
 			for (var j:uint = 0; j < room_spread; j++)
 			for (var i:uint = 0; i < room_spread; i++)
 			{
+				// Skip some grid points so we get the correct number of rooms.
 				if (slack > 0)
 				{
-					if (grid_points - room_centers.length <= slack
-					 || Math.random() > 0.8)
+					if (grid_points - rooms.length < slack
+					 || Math.random() > 1) // TODO
 					{
 						slack--;
 						continue;
 					}
 				}
 				
-				room_centers.push(new Point(
-					(i + 0.5) * MAP_WIDTH / room_spread + Math.random() * 8 - 4,
-					(j + 0.5) * MAP_HEIGHT / room_spread + Math.random() * 8 - 4));
-			}
-			_start = room_centers[0].clone();
-			
-			// Generate rooms.
-			for each (var center:Point in room_centers)
-			{
-				switch (Math.floor(Math.random() * 2.8))
+				// Do a weighted random on room shape.
+				var weights:Array = [3, 4, 1];
+				var rand:uint = Math.floor(Math.random() * 8);
+				var shape:uint = Room.SHAPE_STARBURST;
+				for (var k:int = 0; k < weights.length; k++)
 				{
-				case ROOM_STARBURST:
-					var size:Number = 4 + 5 * Math.random();
-					apply_starburst(level, center, size, size, true);
-					break;
+					if (rand < weights[k])
+					{
+						shape = k;
+					}
+					rand -= weights[k];
+				}
 				
-				case ROOM_RECTANGLE:
-					var width:uint = uint(6 + 8 * Math.random());
-					var height:uint = uint(5 + 5 * Math.random());
-					level.setRect(
-						center.x - width / 2, center.y - height / 2,
-						width, height, 1);
-					break;
+				// Offset the rooms slightly.
+				rooms.push(new Room(
+					new Point(
+						(i + 0.5) * MAP_WIDTH / room_spread + Math.random() * 8 - 4,
+						(j + 0.5) * MAP_HEIGHT / room_spread + Math.random() * 8 - 4),
+					shape, Room.ROLE_NORMAL));
+			}
+			rooms[0].role = Room.ROLE_START;
+			_start = rooms[0].center;
+			
+			// Apply rooms to tilemap.
+			for each (var room:Room in rooms)
+				room.apply(tilemap);
+			
+			/* Generate tunnels.
+			var unvisited:Array = room_centers.slice(0, rooms + 1);
+			var index_start:uint = 0;
+			while (unvisited.length > 1)
+			{
+				var start:Point = unvisited[index_start];
+				var end:Point;
+				var nearest:Number = Number.MAX_VALUE;
+				for each (center in unvisited)
+				{
+					if (center == start)
+						continue;
+					
+					var dist:Number = Point.distance(center, start);
+					if (dist <= nearest)
+					{
+						end = center;
+						nearest = dist;
+					}
+				}
+				level.line(start.x, start.y, end.x, start.y, 1);
+				level.line(end.x, start.y, end.x, end.y, 1);
 				
-				case ROOM_CROSS:
-					var breadth:uint = uint(6 + 3 * Math.random());
-					var dip:uint = uint(3 + 2 * Math.random());
-					level.setRect(
-						center.x - breadth / 2, center.y - (breadth - dip) / 2,
-						breadth, breadth - dip, 1);
-					level.setRect(
-						center.x - (breadth - dip) / 2, center.y - breadth / 2,
-						breadth - dip, breadth, 1);
-					break;
-				}
-			}
-			
-			return level;
-		}
-		
-		/**
-		 * Create a room in a given tilemap by projecting rays from a point.
-		 * @param	level   The tilemap to add the room to.
-		 * @param	center  Point from which to project rays.
-		 * @param	size    Max length of rays.
-		 * @param	detail  Number of rays.
-		 */
-		private function apply_starburst(level:Tilemap, center:Point,
-			size:Number=7.0, detail:uint=30, smooth:Boolean=false):void
-		{			
-			function visit(i:int, j:int):void
-			{
-				if (0 <= i && i < MAP_WIDTH
-				 && 0 <= j && j < MAP_HEIGHT)
-				{
-					level.setTile(i, j, 1);
-				}
-			}
-			
-			function generate_endpoint(theta:Number):Point
-			{
-				var length:Number = size * (0.5 + Math.log(1 + Math.random()));
-				return new Point(
-					center.x + length * Math.cos(theta),
-					center.y + length * Math.sin(theta));
-			}
-			
-			const tau:Number = Math.PI * 2;
-			var sweep:Number = tau / detail;
-			var ends:Array = [];
-			for (var theta:Number = 0; theta < tau; theta += sweep)
-			{
-				if (smooth)
-					ends.push(generate_endpoint(theta));
-				else
-					Utils.raytrace(center, generate_endpoint(theta), visit);
-			}
-			
-			if (smooth)
-			{
-				var last:Point = ends[ends.length - 1];
-				for each(var end:Point in ends)
-				{
-					Utils.raytrace(last, end, visit);
-					last = end;
-				}
-				level.floodFill(center.x, center.y, 1);
-			}
+				unvisited.splice(index_start, 1);
+				index_start = unvisited.indexOf(end);
+			}*/
 		}
 	}
 }

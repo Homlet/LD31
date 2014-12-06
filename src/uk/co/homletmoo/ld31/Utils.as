@@ -41,5 +41,17 @@ package uk.co.homletmoo.ld31
 				steps--;
 			}
 		}
+		
+		public static function hypot(x:Number, y:Number):Number
+		{
+			return Math.sqrt(x * x + y * y);
+		}
+		
+		public static function power_floor(value:Number, base:Number):Number
+		{
+			var exp:Number = Math.log(value) / Math.log(base);
+			exp = Math.floor(exp);
+			return Math.pow(base, exp);
+		}
 	}
 }

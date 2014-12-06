@@ -9,6 +9,7 @@ package uk.co.homletmoo.ld31.entity
 	import net.flashpunk.utils.Input;
 	import uk.co.homletmoo.ld31.Controls;
 	import uk.co.homletmoo.ld31.Types;
+	import uk.co.homletmoo.ld31.Utils;
 	
 	/**
 	 * ...
