@@ -23,16 +23,18 @@ package uk.co.homletmoo.ld31.entity
 		
 		public static const ROOM_STARBURST:uint = 0;
 		
+		private var _start:Point;
 		private var rooms:uint;
 		
 		private var tilemap:Tilemap;
 		private var grid:Grid;
 		
-		public function Level(rooms:uint=10)
+		public function Level(rooms:uint=5)
 		{
 			super();
 			
 			// Initialise variables.
+			_start = new Point(10, 10);
 			this.rooms = rooms;
 			
 			tilemap = generate();
@@ -43,6 +45,11 @@ package uk.co.homletmoo.ld31.entity
 			type = Types.LEVEL;
 		}
 		
+		public function get start():Point
+		{
+			return new Point(_start.x * TILE_SIZE, _start.y * TILE_SIZE);
+		}
+		
 		private function generate():Tilemap
 		{
 			var level:Tilemap = new Tilemap(Images.TILES,
@@ -50,8 +57,8 @@ package uk.co.homletmoo.ld31.entity
 			level.floodFill(0, 0, 0);
 			
 			// Create list of room centres.
-			var room_centers:Array = [];
-			for (var i:int = 0; i < rooms; i++)
+			var room_centers:Array = [_start];
+			for (var i:int = 1; i < rooms; i++)
 			{
 				room_centers.push(new Point(
 					uint(Math.random() * MAP_WIDTH),
