@@ -6,7 +6,9 @@ package uk.co.homletmoo.ld31.world.gen
 	import net.flashpunk.graphics.Tilemap;
 	import uk.co.homletmoo.ld31.assets.Images;
 	import uk.co.homletmoo.ld31.assets.Namer;
+	import uk.co.homletmoo.ld31.entity.Enemy;
 	import uk.co.homletmoo.ld31.entity.Level;
+	import uk.co.homletmoo.ld31.entity.Player;
 	import uk.co.homletmoo.ld31.Main;
 	import uk.co.homletmoo.ld31.Utils;
 	/**
@@ -49,6 +51,13 @@ package uk.co.homletmoo.ld31.world.gen
 			    || center.x + width / 2 > Level.MAP_WIDTH - 1) {width--}
 			while (center.y - height / 2 - 1 < 1
 			    || center.y + height / 2 > Level.MAP_HEIGHT - 1) {height--}
+		}
+		
+		public function get_enemy(player:Player):Enemy
+		{
+			var position:Point = new Point(
+				center.x * Level.TILE_SIZE, center.y * Level.TILE_SIZE);
+			return new Enemy(position, player);
 		}
 		
 		/**

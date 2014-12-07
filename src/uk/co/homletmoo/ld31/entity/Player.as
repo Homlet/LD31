@@ -43,7 +43,7 @@ package uk.co.homletmoo.ld31.entity
 			if (Input.check(Controls.RIGHT)) { velocity.x += 1 }
 			velocity.normalize(SPEED * FP.elapsed);
 			
-			moveBy(velocity.x, velocity.y, Types.LEVEL);
+			moveBy(velocity.x, velocity.y, [Types.LEVEL, Types.ENEMY]);
 		}
 		
 		public function get health():uint { return _health; }

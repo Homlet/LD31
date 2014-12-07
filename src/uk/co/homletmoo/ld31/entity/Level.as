@@ -2,6 +2,7 @@ package uk.co.homletmoo.ld31.entity
 {
 	import flash.geom.Point;
 	import net.flashpunk.Entity;
+	import net.flashpunk.FP;
 	import net.flashpunk.Graphic;
 	import net.flashpunk.graphics.Graphiclist;
 	import net.flashpunk.graphics.Tilemap;
@@ -23,12 +24,16 @@ package uk.co.homletmoo.ld31.entity
 		public static const TILE_SIZE:uint = 8 * Main.SCALE;
 		public static const MAP_WIDTH:uint = uint(Main.WIDTH / TILE_SIZE);
 		public static const MAP_HEIGHT:uint = uint(Main.HEIGHT / TILE_SIZE);
+		public static const MAX_ENEMIES:uint = 10;
 		
 		private var _start:Point;
 		private var room_count:uint;
 		
 		private var rooms:Vector.<Room>;
 		private var tunnels:Vector.<Tunnel>;
+		private var enemies:Vector.<Enemy>;
+		
+		public var player:Player;
 		
 		public var tilemap:Tilemap;
 		private var grid:Grid;
@@ -40,6 +45,7 @@ package uk.co.homletmoo.ld31.entity
 			// Initialise variables.
 			_start = new Point(0, 0);
 			this.room_count = room_count;
+			enemies = new Vector.<Enemy>();
 			
 			type = Types.LEVEL;
 			
@@ -49,6 +55,19 @@ package uk.co.homletmoo.ld31.entity
 			// Sort out the collision grid.
 			grid = tilemap.createGrid([0, 8]);
 			mask = grid;
+		}
+		
+		override public function update():void
+		{
+			if (enemies.length < MAX_ENEMIES && Math.random() > 0.95)
+			{
+				do {
+					var room:Room = Utils.random(rooms);
+				} while (room.role == Room.ROLE_ENTRANCE);
+				var enemy:Enemy = room.get_enemy(player);
+				enemies.push(enemy);
+				FP.world.add(enemy);
+			}
 		}
 		
 		public function get start():Point

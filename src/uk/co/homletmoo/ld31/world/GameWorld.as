@@ -31,6 +31,7 @@ package uk.co.homletmoo.ld31.world
 		override public function begin():void
 		{
 			// Add entities to the update list.
+			level.player = player;
 			add(level);
 			add(player);
 			addGraphic(room_text);

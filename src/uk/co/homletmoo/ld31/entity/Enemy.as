@@ -6,6 +6,7 @@ package uk.co.homletmoo.ld31.entity
 	import net.flashpunk.Graphic;
 	import net.flashpunk.graphics.Image;
 	import uk.co.homletmoo.ld31.Types;
+	import uk.co.homletmoo.ld31.Utils;
 	
 	/**
 	 * ...
@@ -13,7 +14,7 @@ package uk.co.homletmoo.ld31.entity
 	 */
 	public class Enemy extends Entity implements Living
 	{
-		public final var speed:Number = 80;
+		public var speed:Number = 40;
 		
 		private var player:Player;
 		
@@ -38,15 +39,23 @@ package uk.co.homletmoo.ld31.entity
 		
 		override public function update():void
 		{
-			moveTowards(player.x, player.y, speed * FP.elapsed,
-				[Types.LEVEL, Types.PLAYER]);
+			if (Utils.hypot(player.x - x, player.y - y) < 8 * Level.TILE_SIZE)
+			{
+				moveTowards(player.x, player.y, speed * FP.elapsed,
+					[Types.LEVEL, Types.PLAYER, Types.ENEMY]);
+			}
 		}
 		
 		override public function moveCollideX(e:Entity):Boolean
 		{
-			if (e.type = Types.PLAYER)
+			if (e.type == Types.PLAYER)
 			{
 				player.hurt(_strength);
+			}
+			if (e.type == Types.ENEMY)
+			{
+				moveTowards(e.x, e.y, -speed * FP.elapsed,
+					[Types.LEVEL, Types.PLAYER]);
 			}
 			
 			return true;

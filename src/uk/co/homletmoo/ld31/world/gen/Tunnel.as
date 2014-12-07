@@ -28,7 +28,10 @@ package uk.co.homletmoo.ld31.world.gen
 				if (location != null)
 					level.tilemap.setTile(x, y, location.ground);
 				else
-					level.tilemap.setTile(x, y, 10);
+					if (start.shape == end.shape)
+						level.tilemap.setTile(x, y, start.ground);
+					else
+						level.tilemap.setTile(x, y, 10);
 			}
 			
 			var intermediate:Point = new Point(end.center.x, start.center.y);
