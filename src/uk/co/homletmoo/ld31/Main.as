@@ -6,7 +6,7 @@ package uk.co.homletmoo.ld31
 	import uk.co.homletmoo.ld31.world.GameWorld;
 	import uk.co.homletmoo.ld31.world.SplashWorld;
 	
-	[SWF (width = "800", height = "600", backgroundColor = "#523e29")]
+	[SWF (width = "960", height = "720", backgroundColor = "#000000")]
 	
 	/**
 	 * Main engine class.
@@ -17,8 +17,9 @@ package uk.co.homletmoo.ld31
 	{
 		public static var instance:Main;
 		
-		public static const WIDTH:uint = 800;
-		public static const HEIGHT:uint = 600;
+		public static const WIDTH:uint = 960;
+		public static const HEIGHT:uint = 720;
+		public static const SCALE:uint = 2;
 		
 		public function Main()
 		{
@@ -26,7 +27,7 @@ package uk.co.homletmoo.ld31
 			
 			instance = this;
 			
-			FP.console.enable();
+			//FP.console.enable();
 			FP.console.toggleKey = Key.TAB;
 		}
 		

@@ -17,7 +17,7 @@ package uk.co.homletmoo.ld31.entity
 	 */
 	public class Player extends Entity 
 	{
-		public static const SPEED:Number = 35;
+		public static const SPEED:Number = 100;
 		
 		public function Player(start:Point, graphic:Graphic=null) 
 		{
