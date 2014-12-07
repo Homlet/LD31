@@ -1,6 +1,7 @@
 package uk.co.homletmoo.ld31 
 {
 	import flash.geom.Point;
+	import uk.co.homletmoo.ld31.world.gen.Room;
 	
 	/**
 	 * Various utility functions.
@@ -8,7 +9,7 @@ package uk.co.homletmoo.ld31
 	 */
 	public class Utils 
 	{
-		public static function raytrace(start:Point, end:Point, visit:Function):void
+		public static function raytrace(start:Point, end:Point, visit:Function, makeup:uint=1):void
 		{
 			var delta:Point = new Point(
 				Math.abs(end.x - start.x),
@@ -18,7 +19,7 @@ package uk.co.homletmoo.ld31
 				(end.y > start.y) ? 1 : -1);
 			
 			var position:Point = start.clone();
-			var steps:uint = 1 + delta.x + delta.y;
+			var steps:uint = makeup + delta.x + delta.y;
 			var error:int = delta.x - delta.y;
 			
 			delta.x *= 2;
@@ -50,6 +51,11 @@ package uk.co.homletmoo.ld31
 		public static function sign(x:Number):int
 		{
 			return x / Math.abs(x);
+		}
+		
+		public static function random(vector:Vector.<Room>):Room
+		{
+			return vector[Math.floor(Math.random() * vector.length)];
 		}
 	}
 }

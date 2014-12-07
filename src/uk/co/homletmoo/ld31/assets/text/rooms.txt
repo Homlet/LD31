@@ -15,13 +15,26 @@ asylum
 %%R2
 stoneroom
 stellarium
+stadium
+starfish emporium
+stick stack
+
+%%R3
+cupboard
+cauldron
+toilet
+bathroom
+washroom
+laundrette
+shed
+stool-sample storage facility
 
 %%P1
 Morgol
 Plorbog
 Stromgrob
 Plobbob
-Dumboplobub
+Dumboplobbub
 
 %%P2
 Styltar
@@ -29,13 +42,19 @@ Sratrum
 Stalduk
 Sputgum
 
+%%P3
+Cragger
+Straggly
+Blagbloam
+Madcragg
+Badcragg
+Sadcragg
+
 %%A1
 mortifying
 terrible
-peutrid
 frozen
 wasteful
-disgusting
 unfortunate
 unyielding
 monstrous
@@ -46,3 +65,14 @@ intriguing
 bespoke
 indescribable
 impressive
+confusing
+enlightening
+
+%%A3
+dismal
+dreary
+leaky
+damp
+mouldy
+disgusting
+peutrid

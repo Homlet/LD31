@@ -29,7 +29,7 @@ package uk.co.homletmoo.ld31.entity
 		private var rooms:Vector.<Room>;
 		private var tunnels:Vector.<Tunnel>;
 		
-		private var tilemap:Tilemap;
+		public var tilemap:Tilemap;
 		private var grid:Grid;
 		
 		public function Level(room_count:uint=14)
@@ -65,16 +65,22 @@ package uk.co.homletmoo.ld31.entity
 		
 		public function get_room_text(x:int, y:int):String
 		{
-			x /= TILE_SIZE;
-			y /= TILE_SIZE;
-			
+			var location:Room = get_room(x, y);
+			if (location != null)
+				return get_room(x, y).name;
+			else
+				return "Tunnels.";
+		}
+		
+		public function get_room(x:int, y:int):Room
+		{			
 			for each (var room:Room in rooms)
 			{
-				if (room.rect.contains(x + 0.5, y + 0.5))
-					return room.name;
+				if (room.rect.contains(x, y))
+					return room;
 			}
 			
-			return "Tunnels.";
+			return null;
 		}
 		
 		private function generate():void
@@ -122,45 +128,49 @@ package uk.co.homletmoo.ld31.entity
 						(j + 0.5) * MAP_HEIGHT / room_spread + Math.random() * 4 - 2),
 					shape, Room.ROLE_NORMAL));
 			}
-			rooms[0].role = Room.ROLE_START;
+			rooms[0].role = Room.ROLE_ENTRANCE;
 			_start = rooms[0].center;
 			
 			// Generate tunnels.
-			var unvisited:Vector.<Room> = rooms.slice(0, room_count + 1);
-			var index_start:uint = 0;
-			while (unvisited.length > 1)
+			var unvisited:Vector.<Room> = rooms.slice();
+			var visited:Vector.<Room> = rooms.slice(0, 0);
+			while (visited.length < rooms.length - 1)
 			{
-				var end:Room;
-				for (var l:int = 0; l < 2; l++)
+				var start:Room = Utils.random(unvisited);
+				var end:Room = Utils.random(unvisited);
+				var nearest:Number = Number.MAX_VALUE;
+				for each (room in visited)
 				{
-					var start:Room = unvisited[index_start];
-					var nearest:Number = Number.MAX_VALUE;
-					for each (room in unvisited)
+					if (room == start)
+						continue;
+					
+					var dist:Number = Point.distance(
+						room.center, start.center);
+					if (dist <= nearest)
 					{
-						if (room == start || room == end)
-							continue;
-						
-						var dist:Number = Point.distance(room.center, start.center);
-						if (dist <= nearest)
-						{
-							end = room;
-							nearest = dist;
-						}
+						end = room;
+						nearest = dist;
 					}
-					tunnels.push(new Tunnel(start, end));
 				}
+				tunnels.push(new Tunnel(start, end));
 				
-				unvisited.splice(index_start, 1);
-				index_start = unvisited.indexOf(end);
+				if (unvisited.indexOf(start) != -1)
+					unvisited.splice(unvisited.indexOf(start), 1);
+				if (unvisited.indexOf(end) != -1)
+					unvisited.splice(unvisited.indexOf(end), 1);
+				if (visited.indexOf(start) == -1)
+					visited.push(start);
+				if (visited.indexOf(end) == -1)
+					visited.push(end);
 			}
 			
 			// First apply rooms to tilemap.
 			for each (room in rooms)
-				room.apply(tilemap);
+				room.apply(this);
 			
 			// Then apply tunnels.
 			for each(tunnel in tunnels)
-				tunnel.apply(tilemap);
+				tunnel.apply(this);
 		}
 	}
 }

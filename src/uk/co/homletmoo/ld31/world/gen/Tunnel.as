@@ -2,7 +2,7 @@ package uk.co.homletmoo.ld31.world.gen
 {
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
-	import net.flashpunk.graphics.Tilemap;
+	import uk.co.homletmoo.ld31.entity.Level;
 	import uk.co.homletmoo.ld31.Utils;
 	
 	/**
@@ -20,23 +20,15 @@ package uk.co.homletmoo.ld31.world.gen
 			this.end = end;
 		}
 		
-		public function apply(level:Tilemap):void
+		public function apply(level:Level):void
 		{
 			function visit(x:int, y:int):void
 			{
-				var in_start:Boolean = start.rect.contains(x + 0.5, y + 0.5);
-				var in_end:Boolean = end.rect.contains(x + 0.5, y + 0.5);
-				if (in_start && !in_end)
-					level.setTile(x, y, start.ground);
-				else if (!in_start && in_end)
-					level.setTile(x, y, end.ground);
-				else if (!in_start && !in_end)
-				{
-					if (start.ground == end.ground)
-						level.setTile(x, y, start.ground);
-					else
-						level.setTile(x, y, 9);
-				}
+				var location:Room = level.get_room(x, y);
+				if (location != null)
+					level.tilemap.setTile(x, y, location.ground);
+				else
+					level.tilemap.setTile(x, y, 10);
 			}
 			
 			var intermediate:Point = new Point(end.center.x, start.center.y);

@@ -40,7 +40,8 @@ package uk.co.homletmoo.ld31.world
 		{
 			super.update();
 			
-			room_text.text = level.get_room_text(player.x, player.y);
+			room_text.text = level.get_room_text(
+				player.x / Level.TILE_SIZE, player.y / Level.TILE_SIZE);
 		}
 	}
 }

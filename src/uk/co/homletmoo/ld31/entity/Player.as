@@ -15,14 +15,21 @@ package uk.co.homletmoo.ld31.entity
 	 * ...
 	 * @author Homletmoo
 	 */
-	public class Player extends Entity 
+	public class Player extends Entity implements Living
 	{
 		public static const SPEED:Number = 100;
 		
-		public function Player(start:Point, graphic:Graphic=null) 
+		private var _health:uint;
+		private var _strength:uint;
+		
+		public function Player(start:Point) 
 		{
 			super(start.x, start.y, Image.createRect(8, 8, 0xFF0000));
 			setHitbox(8, 8);
+			
+			// Initialise variables.
+			_health = 10;
+			_strength = 4;
 			
 			type = Types.PLAYER;
 		}
@@ -37,6 +44,15 @@ package uk.co.homletmoo.ld31.entity
 			velocity.normalize(SPEED * FP.elapsed);
 			
 			moveBy(velocity.x, velocity.y, Types.LEVEL);
+		}
+		
+		public function get health():uint { return _health; }
+		public function get armor():uint { return 2; }
+		public function get strength():uint { return _strength; }
+		
+		public function hurt(enemy_strength:uint):void
+		{
+			_health -= Math.max(0, enemy_strength - armor);
 		}
 	}
 }

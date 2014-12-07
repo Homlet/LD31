@@ -17,15 +17,15 @@ package uk.co.homletmoo.ld31.world.gen
 		public static const SHAPE_CROSS:uint = 2;
 		
 		public static const ROLE_NORMAL:uint = 0;
-		public static const ROLE_START:uint = 1;
-		public static const ROLE_EXIT:uint = 2;
-		public static const ROLE_LOOT:uint = 3;
+		public static const ROLE_ENTRANCE:uint = 1;
+		public static const ROLE_KEY:uint = 2;
 		
 		public static var namer:Namer = new Namer(Namer.GRAMMAR_ROOM);
 		
 		public var center:Point;
 		public var shape:uint;
 		public var role:uint;
+		public var variation:uint;
 		
 		public var name:String;
 		
@@ -40,24 +40,24 @@ package uk.co.homletmoo.ld31.world.gen
 			
 			name = namer.create;
 			
-			width = 3 + Math.random() * 8;
-			height = 3 + Math.random() * 8;
+			width = 5 + Math.random() * 6;
+			height = 5 + Math.random() * 6;
 		}
 		
-		public function apply(level:Tilemap):void
+		public function apply(level:Level):void
 		{
 			switch(shape)
 			{
 			case SHAPE_STARBURST:
-				starburst(level, Math.min(width, height) / 2);
+				starburst(level.tilemap, Math.min(width, height) / 2);
 				break;
 			
 			case SHAPE_RECTANGLE:
-				rectangle(level);
+				rectangle(level.tilemap);
 				break;
 			
 			case SHAPE_CROSS:
-				cross(level);
+				cross(level.tilemap);
 				break;
 			}
 		}
@@ -69,9 +69,9 @@ package uk.co.homletmoo.ld31.world.gen
 		{
 			switch (shape)
 			{
-			case SHAPE_STARBURST: return 9;
-			case SHAPE_RECTANGLE: return 1;
-			case SHAPE_CROSS: return 10;
+			case SHAPE_STARBURST: return 4 + Math.floor(Math.random() * 2);
+			case SHAPE_RECTANGLE: return 1 + Math.floor(Math.random() * 3);
+			case SHAPE_CROSS: return 9 + Math.floor(Math.random() * 2);
 			default: return 1;
 			}
 		}
@@ -83,9 +83,9 @@ package uk.co.homletmoo.ld31.world.gen
 		{
 			switch (shape)
 			{
-			case SHAPE_STARBURST: return 9;
+			case SHAPE_STARBURST: return 4;
 			case SHAPE_RECTANGLE: return 0;
-			case SHAPE_CROSS: return 10;
+			case SHAPE_CROSS: return 9;
 			default: return 0;
 			}
 		}
@@ -95,7 +95,10 @@ package uk.co.homletmoo.ld31.world.gen
 		 */
 		public function get rect():Rectangle
 		{
-			return new Rectangle(center.x - width / 2, center.y - height / 2, width, height);
+			return new Rectangle(
+				center.x - width / 2 - 1.5,
+				center.y - height / 2 - 1.5,
+				width + 1.5, height + 1.5);
 		}
 		
 		/**
@@ -131,7 +134,7 @@ package uk.co.homletmoo.ld31.world.gen
 				if (smooth)
 					ends.push(generate_endpoint(theta));
 				else
-					Utils.raytrace(center, generate_endpoint(theta), visit);
+					Utils.raytrace(center, generate_endpoint(theta), visit, 3);
 			}
 			
 			if (smooth)
