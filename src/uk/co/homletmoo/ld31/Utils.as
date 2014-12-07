@@ -18,7 +18,7 @@ package uk.co.homletmoo.ld31
 				(end.y > start.y) ? 1 : -1);
 			
 			var position:Point = start.clone();
-			var steps:uint = 2 + delta.x + delta.y;
+			var steps:uint = 1 + delta.x + delta.y;
 			var error:int = delta.x - delta.y;
 			
 			delta.x *= 2;
@@ -47,11 +47,9 @@ package uk.co.homletmoo.ld31
 			return Math.sqrt(x * x + y * y);
 		}
 		
-		public static function power_floor(value:Number, base:Number):Number
+		public static function sign(x:Number):int
 		{
-			var exp:Number = Math.log(value) / Math.log(base);
-			exp = Math.floor(exp);
-			return Math.pow(base, exp);
+			return x / Math.abs(x);
 		}
 	}
 }
