@@ -21,7 +21,7 @@ package uk.co.homletmoo.ld31.world
 		public function GameWorld()
 		{
 			// Initialise variables.
-			level = new Level();
+			level = new Level(15);
 			player = new Player(level.start);
 			room_text = new Text(level.get_room_text(player.x, player.y),
 				5, 5, { size: 8 } );

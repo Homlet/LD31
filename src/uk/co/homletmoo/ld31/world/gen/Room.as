@@ -2,9 +2,12 @@ package uk.co.homletmoo.ld31.world.gen
 {
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import net.flashpunk.graphics.Image;
 	import net.flashpunk.graphics.Tilemap;
+	import uk.co.homletmoo.ld31.assets.Images;
 	import uk.co.homletmoo.ld31.assets.Namer;
 	import uk.co.homletmoo.ld31.entity.Level;
+	import uk.co.homletmoo.ld31.Main;
 	import uk.co.homletmoo.ld31.Utils;
 	/**
 	 * ...
@@ -40,26 +43,12 @@ package uk.co.homletmoo.ld31.world.gen
 			
 			name = namer.create;
 			
-			width = 5 + Math.random() * 6;
-			height = 5 + Math.random() * 6;
-		}
-		
-		public function apply(level:Level):void
-		{
-			switch(shape)
-			{
-			case SHAPE_STARBURST:
-				starburst(level.tilemap, Math.min(width, height) / 2);
-				break;
-			
-			case SHAPE_RECTANGLE:
-				rectangle(level.tilemap);
-				break;
-			
-			case SHAPE_CROSS:
-				cross(level.tilemap);
-				break;
-			}
+			width = 5 + Math.floor(Math.random() * 6);
+			height = 5 + Math.floor(Math.random() * 6);
+			while (center.x - width / 2 - 1 < 1
+			    || center.x + width / 2 > Level.MAP_WIDTH - 1) {width--}
+			while (center.y - height / 2 - 1 < 1
+			    || center.y + height / 2 > Level.MAP_HEIGHT - 1) {height--}
 		}
 		
 		/**
@@ -96,9 +85,36 @@ package uk.co.homletmoo.ld31.world.gen
 		public function get rect():Rectangle
 		{
 			return new Rectangle(
-				center.x - width / 2 - 1.5,
-				center.y - height / 2 - 1.5,
-				width + 1.5, height + 1.5);
+				center.x - width / 2 - 1,
+				center.y - height / 2 - 1,
+				width + 0.5, height + 0.5);
+		}
+		
+		public function apply(level:Level):void
+		{
+			switch(shape)
+			{
+			case SHAPE_STARBURST:
+				starburst(level.tilemap, Math.min(width, height) / 2);
+				break;
+			
+			case SHAPE_RECTANGLE:
+				rectangle(level.tilemap);
+				break;
+			
+			case SHAPE_CROSS:
+				cross(level.tilemap);
+				break;
+			}
+			
+			if (role == ROLE_ENTRANCE)
+			{
+				var stairs:Image = new Image(Images.STAIR);
+				stairs.scale = Main.SCALE;
+				stairs.x = center.x * Level.TILE_SIZE - 4 * Main.SCALE;
+				stairs.y = center.y * Level.TILE_SIZE - 8 * Main.SCALE;
+				level.addGraphic(stairs);
+			}
 		}
 		
 		/**

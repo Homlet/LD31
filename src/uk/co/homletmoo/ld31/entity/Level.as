@@ -3,6 +3,7 @@ package uk.co.homletmoo.ld31.entity
 	import flash.geom.Point;
 	import net.flashpunk.Entity;
 	import net.flashpunk.Graphic;
+	import net.flashpunk.graphics.Graphiclist;
 	import net.flashpunk.graphics.Tilemap;
 	import net.flashpunk.Mask;
 	import net.flashpunk.masks.Grid;
@@ -40,18 +41,10 @@ package uk.co.homletmoo.ld31.entity
 			_start = new Point(0, 0);
 			this.room_count = room_count;
 			
-			rooms = new Vector.<Room>();
-			tunnels = new Vector.<Tunnel>();
-			
-			tilemap = new Tilemap(Images.scale(Images.TILES, Main.SCALE),
-				Main.WIDTH, Main.HEIGHT, TILE_SIZE, TILE_SIZE);
-			tilemap.floodFill(0, 0, 8);
-			
-			graphic = tilemap;
 			type = Types.LEVEL;
 			
 			// Generate the dungeon!
-			generate();
+			while (!generate()) {}
 			
 			// Sort out the collision grid.
 			grid = tilemap.createGrid([0, 8]);
@@ -83,8 +76,16 @@ package uk.co.homletmoo.ld31.entity
 			return null;
 		}
 		
-		private function generate():void
+		private function generate():Boolean
 		{
+			rooms = new Vector.<Room>();
+			tunnels = new Vector.<Tunnel>();
+			
+			tilemap = new Tilemap(Images.scale(Images.TILES, Main.SCALE),
+				Main.WIDTH, Main.HEIGHT, TILE_SIZE, TILE_SIZE);
+			tilemap.floodFill(0, 0, 8);
+			graphic = new Graphiclist(tilemap);
+			
 			// For-each variables, because AS3 scope sucks.
 			var room:Room;
 			var tunnel:Tunnel;
@@ -101,7 +102,7 @@ package uk.co.homletmoo.ld31.entity
 				if (slack > 0)
 				{
 					if (grid_points - rooms.length < slack
-					 || Math.random() > 1) // TODO
+					 || Math.random() > 0.8)
 					{
 						slack--;
 						continue;
@@ -124,12 +125,18 @@ package uk.co.homletmoo.ld31.entity
 				// Offset the rooms slightly.
 				rooms.push(new Room(
 					new Point(
-						(i + 0.5) * MAP_WIDTH / room_spread + Math.random() * 4 - 2,
-						(j + 0.5) * MAP_HEIGHT / room_spread + Math.random() * 4 - 2),
+						(i + 0.5) * MAP_WIDTH / room_spread +
+							Math.floor(Math.random() * 4 - 2),
+						(j + 0.5) * MAP_HEIGHT / room_spread +
+							Math.floor(Math.random() * 4 - 2)),
 					shape, Room.ROLE_NORMAL));
 			}
 			rooms[0].role = Room.ROLE_ENTRANCE;
 			_start = rooms[0].center;
+			
+			// First self-test: make sure we have the right number of rooms.
+			if (rooms.length != room_count)
+				return false;
 			
 			// Generate tunnels.
 			var unvisited:Vector.<Room> = rooms.slice();
@@ -168,9 +175,15 @@ package uk.co.homletmoo.ld31.entity
 			for each (room in rooms)
 				room.apply(this);
 			
+			// TODO: check for bad flood fill.
+			
 			// Then apply tunnels.
 			for each(tunnel in tunnels)
 				tunnel.apply(this);
+			
+			// TODO: check for room connectivity.
+			
+			return true;
 		}
 	}
 }
