@@ -1,0 +1,48 @@
+The %R of %P.
+The %A %R.
+The %A %R of %P.
+%P's %A %R.
+
+%%R1
+mortuary
+abattoir
+refrigerator
+slaughterhouse
+torture room
+tortoise room
+asylum
+
+%%R2
+stoneroom
+stellarium
+
+%%P1
+Morgol
+Plorbog
+Stromgrob
+Plobbob
+Dumboplobub
+
+%%P2
+Styltar
+Sratrum
+Stalduk
+Sputgum
+
+%%A1
+mortifying
+terrible
+peutrid
+frozen
+wasteful
+disgusting
+unfortunate
+unyielding
+monstrous
+
+%%A2
+complex
+intriguing
+bespoke
+indescribable
+impressive
