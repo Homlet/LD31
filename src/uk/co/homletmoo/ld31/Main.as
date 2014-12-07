@@ -3,6 +3,7 @@ package uk.co.homletmoo.ld31
 	import net.flashpunk.Engine;
 	import net.flashpunk.FP;
 	import net.flashpunk.utils.Key;
+	import uk.co.homletmoo.ld31.assets.Music;
 	import uk.co.homletmoo.ld31.world.GameWorld;
 	import uk.co.homletmoo.ld31.world.SplashWorld;
 	
@@ -27,7 +28,9 @@ package uk.co.homletmoo.ld31
 			
 			instance = this;
 			
-			//FP.console.enable();
+			Music.initialize();
+			
+			FP.console.enable();
 			FP.console.toggleKey = Key.TAB;
 		}
 		

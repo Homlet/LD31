@@ -2,11 +2,13 @@ package uk.co.homletmoo.ld31.world.gen
 {
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import net.flashpunk.FP;
 	import net.flashpunk.graphics.Image;
 	import net.flashpunk.graphics.Tilemap;
 	import uk.co.homletmoo.ld31.assets.Images;
 	import uk.co.homletmoo.ld31.assets.Namer;
 	import uk.co.homletmoo.ld31.entity.Enemy;
+	import uk.co.homletmoo.ld31.entity.Key;
 	import uk.co.homletmoo.ld31.entity.Level;
 	import uk.co.homletmoo.ld31.entity.Player;
 	import uk.co.homletmoo.ld31.Main;
@@ -124,6 +126,14 @@ package uk.co.homletmoo.ld31.world.gen
 				stairs.y = center.y * Level.TILE_SIZE - 8 * Main.SCALE;
 				level.addGraphic(stairs);
 			}
+			
+			if (role == ROLE_KEY)
+			{
+				var key:Key = new Key(center);
+				key.x = center.x * Level.TILE_SIZE - 4 * Main.SCALE;
+				key.y = center.y * Level.TILE_SIZE - 8 * Main.SCALE;
+				FP.world.add(key);
+			}
 		}
 		
 		/**
@@ -151,15 +161,14 @@ package uk.co.homletmoo.ld31.world.gen
 					center.y + length * Math.sin(theta));
 			}
 			
-			const tau:Number = Math.PI * 2;
-			var sweep:Number = tau / detail;
+			var sweep:Number = Utils.TAU / detail;
 			var ends:Array = [];
-			for (var theta:Number = 0; theta < tau; theta += sweep)
+			for (var theta:Number = 0; theta < Utils.TAU; theta += sweep)
 			{
 				if (smooth)
 					ends.push(generate_endpoint(theta));
 				else
-					Utils.raytrace(center, generate_endpoint(theta), visit, 3);
+					Utils.raytrace(center, generate_endpoint(theta), visit);
 			}
 			
 			if (smooth)
@@ -167,7 +176,7 @@ package uk.co.homletmoo.ld31.world.gen
 				var last:Point = ends[ends.length - 1];
 				for each(var end:Point in ends)
 				{
-					Utils.raytrace(last, end, visit);
+					Utils.raytrace(last, end, visit, 2);
 					last = end;
 				}
 				level.floodFill(center.x, center.y, ground);

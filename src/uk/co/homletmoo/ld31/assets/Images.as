@@ -17,6 +17,9 @@ package uk.co.homletmoo.ld31.assets
 		[Embed (source = "images/flashpunk.png")] public static var FP_LOGO:Class;
 		[Embed (source = "images/tiles.png")] public static var TILES:Class;
 		[Embed (source = "images/stair.png")] public static var STAIR:Class;
+		[Embed (source = "images/torch.png")] public static var TORCH:Class;
+		[Embed (source = "images/player.png")] public static var PLAYER:Class;
+		[Embed (source = "images/key.png")] public static var KEY:Class;
 		
 		public static var cache:Dictionary;
 		public static function scale(source:Class, factor:uint):BitmapData

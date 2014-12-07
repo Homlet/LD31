@@ -18,6 +18,7 @@ stellarium
 stadium
 starfish emporium
 stick stack
+stem cell research facility
 
 %%R3
 cupboard
@@ -28,6 +29,8 @@ washroom
 laundrette
 shed
 stool-sample storage facility
+dumpster
+rubbish bin
 
 %%P1
 Morgol
@@ -35,12 +38,17 @@ Plorbog
 Stromgrob
 Plobbob
 Dumboplobbub
+Gobdrobmobplobbbob
+Gumbotrobblob
 
 %%P2
 Styltar
 Sratrum
 Stalduk
 Sputgum
+Strygax
+Slywrax
+Slonfax
 
 %%P3
 Cragger
@@ -49,6 +57,9 @@ Blagbloam
 Madcragg
 Badcragg
 Sadcragg
+Fadcragg
+Gladcragg
+Stradcragg
 
 %%A1
 mortifying
@@ -58,6 +69,9 @@ wasteful
 unfortunate
 unyielding
 monstrous
+sinister
+evil
+painful
 
 %%A2
 complex
@@ -67,6 +81,8 @@ indescribable
 impressive
 confusing
 enlightening
+wonderful
+glorious
 
 %%A3
 dismal
@@ -76,3 +92,7 @@ damp
 mouldy
 disgusting
 peutrid
+yucky
+squelchy
+muddy
+musky

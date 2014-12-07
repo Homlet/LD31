@@ -9,6 +9,8 @@ package uk.co.homletmoo.ld31
 	 */
 	public class Utils 
 	{
+		public static const TAU:Number = Math.PI * 2;
+		
 		public static function raytrace(start:Point, end:Point, visit:Function, makeup:uint=1):void
 		{
 			var delta:Point = new Point(

@@ -9,6 +9,7 @@ package uk.co.homletmoo.ld31.entity
 	import net.flashpunk.Mask;
 	import net.flashpunk.masks.Grid;
 	import uk.co.homletmoo.ld31.assets.Images;
+	import uk.co.homletmoo.ld31.Layers;
 	import uk.co.homletmoo.ld31.Main;
 	import uk.co.homletmoo.ld31.Types;
 	import uk.co.homletmoo.ld31.Utils;
@@ -25,6 +26,7 @@ package uk.co.homletmoo.ld31.entity
 		public static const MAP_WIDTH:uint = uint(Main.WIDTH / TILE_SIZE);
 		public static const MAP_HEIGHT:uint = uint(Main.HEIGHT / TILE_SIZE);
 		public static const MAX_ENEMIES:uint = 10;
+		public static const KEYS:uint = 2;
 		
 		private var _start:Point;
 		private var room_count:uint;
@@ -38,7 +40,7 @@ package uk.co.homletmoo.ld31.entity
 		public var tilemap:Tilemap;
 		private var grid:Grid;
 		
-		public function Level(room_count:uint=14)
+		public function Level(room_count:uint)
 		{
 			super();
 			
@@ -48,6 +50,7 @@ package uk.co.homletmoo.ld31.entity
 			enemies = new Vector.<Enemy>();
 			
 			type = Types.LEVEL;
+			layer = Layers.LEVEL;
 			
 			// Generate the dungeon!
 			while (!generate()) {}
@@ -113,6 +116,7 @@ package uk.co.homletmoo.ld31.entity
 			var room_spread:Number = Math.ceil(Math.sqrt(room_count));
 			var grid_points:uint = Math.pow(room_spread, 2);
 			var slack:uint = grid_points - room_count;
+			var keys:uint = 0;
 			
 			for (var j:uint = 0; j < room_spread; j++)
 			for (var i:uint = 0; i < room_spread; i++)
@@ -125,6 +129,17 @@ package uk.co.homletmoo.ld31.entity
 					{
 						slack--;
 						continue;
+					}
+				}
+				
+				var role:uint = Room.ROLE_NORMAL;
+				if (keys < KEYS)
+				{
+					if (room_count - rooms.length <= KEYS - keys
+					 || Math.random() > 0.9)
+					{
+						role = Room.ROLE_KEY;
+						keys++;
 					}
 				}
 				
@@ -148,19 +163,22 @@ package uk.co.homletmoo.ld31.entity
 							Math.floor(Math.random() * 4 - 2),
 						(j + 0.5) * MAP_HEIGHT / room_spread +
 							Math.floor(Math.random() * 4 - 2)),
-					shape, Room.ROLE_NORMAL));
+					shape, role));
 			}
 			rooms[0].role = Room.ROLE_ENTRANCE;
-			_start = rooms[0].center;
+			_start = new Point(rooms[0].center.x, rooms[0].center.y + 1);
 			
 			// First self-test: make sure we have the right number of rooms.
 			if (rooms.length != room_count)
+				return false;
+			// And the correct number of keys.
+			if (keys < KEYS)
 				return false;
 			
 			// Generate tunnels.
 			var unvisited:Vector.<Room> = rooms.slice();
 			var visited:Vector.<Room> = rooms.slice(0, 0);
-			while (visited.length < rooms.length - 1)
+			while (unvisited.length > 0)
 			{
 				var start:Room = Utils.random(unvisited);
 				var end:Room = Utils.random(unvisited);

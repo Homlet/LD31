@@ -5,6 +5,7 @@ package uk.co.homletmoo.ld31.entity
 	import net.flashpunk.FP;
 	import net.flashpunk.Graphic;
 	import net.flashpunk.graphics.Image;
+	import uk.co.homletmoo.ld31.Layers;
 	import uk.co.homletmoo.ld31.Types;
 	import uk.co.homletmoo.ld31.Utils;
 	
@@ -14,7 +15,7 @@ package uk.co.homletmoo.ld31.entity
 	 */
 	public class Enemy extends Entity implements Living
 	{
-		public var speed:Number = 40;
+		public var speed:Number = 32;
 		
 		private var player:Player;
 		
@@ -35,6 +36,7 @@ package uk.co.homletmoo.ld31.entity
 			_strength = 4;
 			
 			type = Types.ENEMY;
+			layer = Layers.CREATURES;
 		}
 		
 		override public function update():void
@@ -43,6 +45,8 @@ package uk.co.homletmoo.ld31.entity
 			{
 				moveTowards(player.x, player.y, speed * FP.elapsed,
 					[Types.LEVEL, Types.PLAYER, Types.ENEMY]);
+			} else
+			{
 			}
 		}
 		
@@ -50,7 +54,8 @@ package uk.co.homletmoo.ld31.entity
 		{
 			if (e.type == Types.PLAYER)
 			{
-				player.hurt(_strength);
+				player.hurt(_strength, new Point(x, y));
+				moveTowards(player.x, player.y, -FP.elapsed * 160, [Types.LEVEL]);
 			}
 			if (e.type == Types.ENEMY)
 			{
@@ -61,11 +66,16 @@ package uk.co.homletmoo.ld31.entity
 			return true;
 		}
 		
+		override public function moveCollideY(e:Entity):Boolean
+		{
+			return moveCollideX(e);
+		}
+		
 		public function get health():uint { return _health; }
 		public function get armor():uint { return _armor; }
 		public function get strength():uint { return _strength; }
 		
-		public function hurt(enemy_strength:uint):void
+		public function hurt(enemy_strength:uint, source:Point):void
 		{
 			_health -= Math.max(0, enemy_strength - armor);
 		}
