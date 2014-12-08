@@ -19,7 +19,15 @@ package uk.co.homletmoo.ld31.assets
 		[Embed (source = "images/stair.png")] public static var STAIR:Class;
 		[Embed (source = "images/torch.png")] public static var TORCH:Class;
 		[Embed (source = "images/player.png")] public static var PLAYER:Class;
+		[Embed (source = "images/enemy.png")] public static var ENEMY:Class;
 		[Embed (source = "images/key.png")] public static var KEY:Class;
+		[Embed (source = "images/escape.png")] public static var ESCAPE:Class;
+		[Embed (source = "images/killed.png")] public static var KILLED:Class;
+		[Embed (source = "images/slide_0.png")] public static var SLIDE_0:Class;
+		[Embed (source = "images/slide_1.png")] public static var SLIDE_1:Class;
+		[Embed (source = "images/slide_3.png")] public static var SLIDE_2:Class;
+		public static var SLIDES:Array = [SLIDE_0, SLIDE_1, SLIDE_2];
+		[Embed (source = "images/thexofy.png")] public static var TITLE:Class;
 		
 		public static var cache:Dictionary;
 		public static function scale(source:Class, factor:uint):BitmapData

@@ -11,8 +11,10 @@ package uk.co.homletmoo.ld31.world.gen
 	import uk.co.homletmoo.ld31.entity.Key;
 	import uk.co.homletmoo.ld31.entity.Level;
 	import uk.co.homletmoo.ld31.entity.Player;
+	import uk.co.homletmoo.ld31.entity.Stair;
 	import uk.co.homletmoo.ld31.Main;
 	import uk.co.homletmoo.ld31.Utils;
+	import uk.co.homletmoo.ld31.world.GameWorld;
 	/**
 	 * ...
 	 * @author Homletmoo
@@ -120,11 +122,11 @@ package uk.co.homletmoo.ld31.world.gen
 			
 			if (role == ROLE_ENTRANCE)
 			{
-				var stairs:Image = new Image(Images.STAIR);
-				stairs.scale = Main.SCALE;
-				stairs.x = center.x * Level.TILE_SIZE - 4 * Main.SCALE;
-				stairs.y = center.y * Level.TILE_SIZE - 8 * Main.SCALE;
-				level.addGraphic(stairs);
+				var stair:Stair = new Stair(new Point(
+					center.x * Level.TILE_SIZE - 4 * Main.SCALE,
+					center.y * Level.TILE_SIZE - 8 * Main.SCALE));
+				FP.world.add(stair);
+				(FP.world as GameWorld).stair = stair;
 			}
 			
 			if (role == ROLE_KEY)

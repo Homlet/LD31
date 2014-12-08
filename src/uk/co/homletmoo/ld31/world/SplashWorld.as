@@ -17,6 +17,7 @@ package uk.co.homletmoo.ld31.world
 	{
 		private var hm_logo:Image;
 		private var fp_logo:Spritemap;
+		private var black:Image;
 		
 		private var tweens:Array;
 		private var stage:uint;
@@ -33,6 +34,8 @@ package uk.co.homletmoo.ld31.world
 			fp_logo.alpha = 0;
 			fp_logo.add("play", [0, 1, 2, 3], 8);
 			
+			black = Image.createRect(Main.WIDTH, Main.HEIGHT, 0, 0);
+			
 			tweens = [
 				function():void { FP.tween(fp_logo, {alpha: 1}, 0.8, {complete: next, easing: Ease.expoIn}); },
 				function():void { FP.tween(null, null, 0.8, {complete: next}); },
@@ -40,7 +43,9 @@ package uk.co.homletmoo.ld31.world
 				
 				function():void { FP.tween(hm_logo, {alpha: 1}, 0.8, {complete: next, easing: Ease.expoIn}); },
 				function():void { FP.tween(null, null, 0.8, {complete: next}); },
-				function():void { FP.tween(hm_logo, {alpha: 0}, 0.5, {complete: done}); }
+				function():void { FP.tween(hm_logo, {alpha: 0}, 0.5, {complete: next}); },
+				
+				function():void { FP.tween(black, {alpha: 1}, 0.5, {complete: done}); }
 			];
 		}
 		
@@ -48,6 +53,7 @@ package uk.co.homletmoo.ld31.world
 		{
 			addGraphic(hm_logo, 0, Main.WIDTH / 2, Main.HEIGHT / 2);
 			addGraphic(fp_logo, 0, 0, Main.HEIGHT - fp_logo.scaledHeight);
+			addGraphic(black);
 			
 			fp_logo.play("play");
 			
@@ -61,7 +67,7 @@ package uk.co.homletmoo.ld31.world
 		
 		private function done():void
 		{
-			FP.world = new GameWorld();
+			FP.world = new IntroWorld();
 		}
 	}
 }

@@ -14,6 +14,7 @@ package uk.co.homletmoo.ld31.entity
 	import uk.co.homletmoo.ld31.Main;
 	import uk.co.homletmoo.ld31.Types;
 	import uk.co.homletmoo.ld31.Utils;
+	import uk.co.homletmoo.ld31.world.EndWorld;
 	import uk.co.homletmoo.ld31.world.GameWorld;
 	
 	/**
@@ -30,6 +31,8 @@ package uk.co.homletmoo.ld31.entity
 		private var _health:uint;
 		private var grace:Number;
 		private var _strength:uint;
+		
+		private var _keys:uint;
 		
 		public function Player(start:Point) 
 		{
@@ -52,6 +55,8 @@ package uk.co.homletmoo.ld31.entity
 			grace = GRACE;
 			_strength = 4;
 			
+			_keys = 0;
+			
 			type = Types.PLAYER;
 			layer = Layers.PLAYER;
 		}
@@ -61,7 +66,7 @@ package uk.co.homletmoo.ld31.entity
 			if (health <= 0)
 			{
 				// Deaded.
-				FP.world = new GameWorld();
+				FP.world = new EndWorld(EndWorld.FAILURE);
 			}
 			
 			// We've just been hit, make sure that doesn't happen again.
@@ -95,9 +100,47 @@ package uk.co.homletmoo.ld31.entity
 			}
 		}
 		
+		override public function moveCollideX(e:Entity):Boolean
+		{
+			if (e.type == Types.KEY && e.active)
+			{
+				_keys++;
+				e.active = false;
+				FP.world.remove(e);
+				return false;
+			}
+			return true;
+		}
+		
+		override public function moveCollideY(e:Entity):Boolean
+		{
+			return moveCollideX(e);
+		}
+		
 		public function get health():uint { return _health; }
+		public function get health_bar():String
+		{
+			var out:String = "";
+			for (var i:int = 0; i < health; i++)
+			{
+				out += "~";
+			}
+			return out;
+		}
+		
 		public function get armor():uint { return 2; }
 		public function get strength():uint { return _strength; }
+		
+		public function get keys():uint { return _keys; }
+		public function get keys_bar():String
+		{
+			var out:String = "";
+			for (var i:int = 0; i < keys; i++)
+			{
+				out += "+";
+			}
+			return out;
+		}
 		
 		public function hurt(enemy_strength:uint, source:Point):void
 		{

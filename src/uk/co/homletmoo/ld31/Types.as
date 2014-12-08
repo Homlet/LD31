@@ -10,5 +10,6 @@ package uk.co.homletmoo.ld31
 		public static const PLAYER:String = "player";
 		public static const ENEMY:String = "enemy";
 		public static const KEY:String = "key";
+		public static const STAIR:String = "stair";
 	}
 }
